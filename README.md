@@ -1,8 +1,39 @@
 # Trading Portfolio Analysis
 
-A data pipeline and Power BI dashboard analyzing daily price performance across a
+A data pipeline analyzing daily price performance across a
 110-stock universe (11 GICS-style sectors, 10 tickers each) from 2020-01-02 onward,
 benchmarked against the S&P 500 (SPY).
+
+
+## Opening Summary
+
+
+Seven sectors beat the benchmark SPY on total return, but only two beat it on
+Sharpe ratio. Equal-weighting all 110 tickers beat SPY on both, which is why I
+used EW110 as a second benchmark: SPY is cap-weighted across 500 tickers, while
+the sectors here are equal-weighted baskets of 10.
+
+Picking sectors on past performance did not hold up. The best combination from
+2020 to 2023 — Information Technology plus Health Care — finished 1,190th of
+2,047 on 2024 to 2026. Technology, the best sector in sample, finished 1,924th,
+in the bottom 6% out of sample.
+
+The aim was to determine which sectors are outperforming the benchmark SPY. The
+Sharpe ratio is used to determine whether the cost of a sector's outperformance
+is higher volatility, i.e. risk. The portfolio was rebalanced to equal weight to
+keep the analysis fair. I ran a series of combinations of sectors to see which
+combination had the best return. To test whether those combinations held up, a
+sample of returns from 2020 to 2023 was used to select the highest performers,
+and I then tested whether those performers held to the same standard from 2024
+to 2026.
+
+Two limitations. The first is the anomalous activity from 2020 to 2022 due to
+the pandemic market pullback — however, markets will always have some type of
+unusual activity over any time period chosen. The second is selection bias in
+the universe: the 10 tickers in each sector were chosen partly because of
+popularity, so one could say they are close to the top performers in each of
+those given sectors. The selection bias on the tickers I believe skewed the 
+results higher than a random sample of tickers.
 
 ## What's in this repo
 
@@ -14,7 +45,6 @@ benchmarked against the S&P 500 (SPY).
 | `data/stock_data.csv` | Long-format price + daily return data, all 110 tickers |
 | `data/benchmark_data.csv` | SPY price + daily return, same shape |
 | `data/stock_data.db` | SQLite database — the tables/views from `sql/` populated with the CSV data |
-| `dashboard/trading_performance.pbix` | Power BI dashboard built on top of `stock_data.db` — Total Portfolio Return, CAGR, Sharpe Ratio, price trend, and ticker/sector breakdown |
 
 ## Ticker universe
 
@@ -22,7 +52,7 @@ benchmarked against the S&P 500 (SPY).
 Consumer Staples, Energy, Financials, Health Care, Industrials, Information Technology,
 Materials, Real Estate, Utilities. The full ticker-to-sector mapping lives in
 `notebooks/data_collection.ipynb` (`TICKER_SECTORS` dict) — that's the single source
-of truth for the universe, rather than being hardcoded separately in SQL or Power BI.
+of truth for the universe, rather than being hardcoded separately in SQL 
 
 ## How to reproduce this from scratch
 
@@ -63,7 +93,4 @@ it now targets SQLite for portability (no server setup required to reproduce), w
 SQL Server as an optional stretch target — the schema in `sql/schema.sql` is a direct
 port and uses only syntax with a straightforward SQL Server equivalent.
 
-The dashboard also went through a couple of dead-end rebuild attempts (an in-progress
-version and a friend-assisted tweak of it, neither fully working) that have since been
-removed — `trading_performance.pbix` is the original, more complete version and is now
-the only one kept.
+
